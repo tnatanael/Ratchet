@@ -13,13 +13,6 @@ class HttpRequestParser implements MessageInterface {
     const EOM = "\r\n\r\n";
 
     /**
-     * The maximum number of bytes the request can be
-     * This is a security measure to prevent attacks
-     * @var int
-     */
-    public $maxSize = 4096;
-
-    /**
      * @param \Ratchet\ConnectionInterface $context
      * @param string                       $data Data stream to buffer
      * @return \Psr\Http\Message\RequestInterface
@@ -31,10 +24,6 @@ class HttpRequestParser implements MessageInterface {
         }
 
         $context->httpBuffer .= $data;
-
-        if (strlen($context->httpBuffer) > (int)$this->maxSize) {
-            throw new \OverflowException("Maximum buffer size of {$this->maxSize} exceeded parsing HTTP header");
-        }
 
         if ($this->isEom($context->httpBuffer)) {
             $request = $this->parse($context->httpBuffer);
